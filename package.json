@@ -5,12 +5,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/1729051657/nodejs-plugin.git"
+    "url": "git+https://github.com/yourname/nodejs-plugin.git"
   },
   "bugs": {
-    "url": "https://github.com/1729051657/nodejs-plugin/issues"
+    "url": "https://github.com/yourname/nodejs-plugin/issues"
   },
-  "homepage": "https://github.com/1729051657/nodejs-plugin#readme",
+  "homepage": "https://github.com/yourname/nodejs-plugin#readme",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
