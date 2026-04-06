@@ -1,16 +1,16 @@
 {
   "name": "live2d-web-widget",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A configurable browser Live2D widget with demo assets for modern web apps.",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yourname/nodejs-plugin.git"
+    "url": "git+https://github.com/1729051657/live2d-web.git"
   },
   "bugs": {
-    "url": "https://github.com/yourname/nodejs-plugin/issues"
+    "url": "https://github.com/1729051657/live2d-web/issues"
   },
-  "homepage": "https://github.com/yourname/nodejs-plugin#readme",
+  "homepage": "https://github.com/1729051657/live2d-web#readme",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

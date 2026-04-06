@@ -19,15 +19,21 @@ interface Live2DGlobal {
     captureFrame?: boolean;
     captureName?: string;
   };
-  loadlive2d?: (canvasId: string, modelUrl: string) => void;
+  /** 第三参为鼠标 Y 锚点比例（0~1），与 layout 缩放无关 */
+  loadlive2d?: (canvasId: string, modelUrl: string, mouseAnchorY?: number) => void;
 }
 
 const STYLE_ID = "live2d-widget-package-style";
-const DEFAULT_HEIGHT = 300;
+/** 未传 width 时的默认；画布显示高度由内部缓冲比例自动算出 */
+const DEFAULT_HEIGHT = 280;
 const DEFAULT_HIDE_DURATION = 24 * 60 * 60 * 1000;
 const DEFAULT_INFO_LINK = "https://github.com/stevenjoezhang/live2d-widget";
 const DEFAULT_STORAGE_PREFIX = "live2d-widget";
-const DEFAULT_WIDTH = 300;
+const DEFAULT_WIDTH = 280;
+/** 内部 WebGL 缓冲（偏竖），比正方形更易容纳全身偏高模型；显示时按同比例缩放 */
+const CANVAS_BUFFER_W = 800;
+/** 竖向略长于宽，兼顾全身与留白；过大则上下空白多。勿在已有 WebGL 上下文后改 width/height（会清空画布） */
+const CANVAS_BUFFER_H = 1100;
 
 let widgetCount = 0;
 const runtimeLoaders = new Map<string, Promise<void>>();
@@ -278,6 +284,8 @@ class Live2DWidgetController implements Live2DWidgetInstance {
   private cleanupCallbacks: Array<() => void> = [];
   private resolvedModelBaseUrl: string | undefined;
   private usesBundledDemoManifest = false;
+  /** 首帧 loadlive2d 已跑过后勿再改 canvas 尺寸，否则会丢失 WebGL */
+  private hasLive2DInitialized = false;
 
   constructor(private readonly options: Live2DWidgetOptions = {}) {
     this.canvasId = options.canvasId ?? `live2d-widget-canvas-${++widgetCount}`;
@@ -310,6 +318,8 @@ class Live2DWidgetController implements Live2DWidgetInstance {
     if (!this.isMounted) {
       return;
     }
+
+    this.hasLive2DInitialized = false;
 
     for (const cleanup of this.cleanupCallbacks.splice(0)) {
       cleanup();
@@ -460,6 +470,20 @@ class Live2DWidgetController implements Live2DWidgetInstance {
     }, timeoutMs);
   }
 
+  private applyCanvasBufferAndStyle(): void {
+    if (!this.canvas) {
+      return;
+    }
+
+    this.canvas.width = CANVAS_BUFFER_W;
+    this.canvas.height = CANVAS_BUFFER_H;
+    const displayW =
+      this.width === this.height ? this.width : Math.min(this.width, this.height);
+    const displayH = Math.round((displayW * CANVAS_BUFFER_H) / CANVAS_BUFFER_W);
+    this.canvas.style.width = `${displayW}px`;
+    this.canvas.style.height = `${displayH}px`;
+  }
+
   public async switchModel(index: number): Promise<void> {
     await this.mount();
     const boundedIndex = ((index % this.manifest.models.length) + this.manifest.models.length) % this.manifest.models.length;
@@ -472,7 +496,12 @@ class Live2DWidgetController implements Live2DWidgetInstance {
       throw new Error("Live2D runtime is not ready.");
     }
 
+    if (!this.hasLive2DInitialized) {
+      this.applyCanvasBufferAndStyle();
+    }
+
     globalApi.loadlive2d(this.canvasId, modelUrl);
+    this.hasLive2DInitialized = true;
     this.currentModelIndex = boundedIndex;
     this.currentModelUrl = modelUrl;
     this.localStorage?.setItem(`${this.storagePrefix}:model-index`, String(boundedIndex));
@@ -610,10 +639,16 @@ class Live2DWidgetController implements Live2DWidgetInstance {
     this.canvas = document.createElement("canvas");
     this.canvas.className = "l2d-widget__canvas";
     this.canvas.id = this.canvasId;
-    this.canvas.width = 800;
-    this.canvas.height = 800;
-    this.canvas.style.width = `${this.width}px`;
-    this.canvas.style.height = `${this.height}px`;
+    this.applyCanvasBufferAndStyle();
+
+    const rawOffset = this.options.canvasOffsetY;
+    const offset =
+      rawOffset === undefined ? "10%" : rawOffset.trim();
+    if (offset !== "" && offset !== "0" && offset !== "none") {
+      this.canvas.style.transform = /translate|scale|matrix|rotate/i.test(offset)
+        ? offset
+        : `translateY(${offset})`;
+    }
 
     const tools = document.createElement("div");
     tools.className = "l2d-widget__tools";

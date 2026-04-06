@@ -13,7 +13,7 @@
 ## 与后端仓库的关系
 
 - **本仓库**：浏览器插件 + 可选 Node 客户端子路径。
-- **[live2d-service](https://github.com/yourname/live2d-service)**（另库）：Vercel 上的模型与动态 API（`api/model-list`、`api/next` 等）。
+- **[live2d-service](https://github.com/1729051657/live2d-service)**（另库）：Vercel 上的模型与动态 API（`api/model-list`、`api/next` 等）。
 
 ## 安装
 
@@ -45,7 +45,7 @@ import { createLive2DWidget } from "live2d-web-widget";
 
 createLive2DWidget({
   serviceUrl: "https://your-live2d-service.vercel.app",
-  infoLink: "https://github.com/yourname/live2d-service"
+  infoLink: "https://github.com/1729051657/live2d-service"
 });
 ```
 
@@ -128,7 +128,7 @@ createLive2DWidget({
   modelBaseUrl: "https://your-cdn.example.com/live2d/",
   modelManifestUrl: "/live2d/model-list.json",
   tipsUrl: "/live2d/tips.json",
-  infoLink: "https://github.com/yourname/live2d-service",
+  infoLink: "https://github.com/1729051657/live2d-service",
   storageKeyPrefix: "my-live2d-widget"
 });
 ```

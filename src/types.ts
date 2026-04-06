@@ -51,6 +51,9 @@ export interface Live2DWidgetOptions {
   autoMount?: boolean;
   canvasId?: string;
   container?: HTMLElement | string;
+  /**
+   * 与 `width` 一起决定缩放基准：取二者较小值作为「显示宽度」，高度按内部缓冲 800×1100 与宽度同比例计算，避免拉伸。
+   */
   height?: number;
   hiddenDurationMs?: number;
   infoLink?: string;
@@ -75,8 +78,14 @@ export interface Live2DWidgetOptions {
   storageKeyPrefix?: string;
   tips?: Partial<WidgetTipsConfig>;
   tipsUrl?: string;
+  /** 显示宽度基准（像素），见 `height` 说明。 */
   width?: number;
   zIndex?: number;
+  /**
+   * 画布在页面上的垂直偏移。默认略向下（约 8% 高度），让人物更贴底、减轻下方留白。
+   * 设为 `"0"` 或 `"none"` 可关闭；仍裁顶时可试略负值如 `-2%`。
+   */
+  canvasOffsetY?: string;
 }
 
 export interface Live2DWidgetInstance {

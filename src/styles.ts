@@ -6,6 +6,7 @@ export const widgetStyles = `
   flex-direction: column;
   gap: 0;
   left: 0;
+  overflow: visible;
   pointer-events: auto;
   position: fixed;
   transform: translateY(0);
@@ -53,13 +54,15 @@ export const widgetStyles = `
 }
 
 .l2d-widget__stage {
+  align-items: flex-end;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  overflow: visible;
   position: relative;
 }
 
 .l2d-widget__canvas-wrap {
+  overflow: visible;
   position: relative;
 }
 
@@ -68,6 +71,7 @@ export const widgetStyles = `
   display: block;
   filter: drop-shadow(0 18px 28px rgba(30, 30, 40, 0.18));
   touch-action: none;
+  transform-origin: bottom center;
 }
 
 .l2d-widget__canvas:active {
@@ -81,7 +85,7 @@ export const widgetStyles = `
   opacity: 0;
   position: absolute;
   right: -12px;
-  top: 76px;
+  top: min(96px, 26%);
   transition: opacity 0.24s ease;
 }
 
