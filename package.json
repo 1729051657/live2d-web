@@ -1,0 +1,54 @@
+{
+  "name": "live2d-web-widget",
+  "version": "0.1.0",
+  "description": "A configurable browser Live2D widget with demo assets for modern web apps.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourname/nodejs-plugin.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourname/nodejs-plugin/issues"
+  },
+  "homepage": "https://github.com/yourname/nodejs-plugin#readme",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./service-client": {
+      "types": "./dist/serviceClient.d.ts",
+      "import": "./dist/serviceClient.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json && node ./scripts/build-assets.mjs",
+    "check": "npm run build",
+    "prepublishOnly": "npm run build",
+    "demo:serve": "npm run build && python3 -m http.server 4173"
+  },
+  "keywords": [
+    "live2d",
+    "widget",
+    "waifu",
+    "browser",
+    "nextjs",
+    "nodejs"
+  ],
+  "devDependencies": {
+    "typescript": "^6.0.2"
+  }
+}

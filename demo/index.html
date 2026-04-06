@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>live2d-web-widget Demo</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background:
+          radial-gradient(circle at top, rgba(130, 181, 255, 0.28), transparent 38%),
+          linear-gradient(180deg, #f6f9ff 0%, #eef3fb 100%);
+        color: #243041;
+      }
+
+      main {
+        box-sizing: border-box;
+        margin: 0 auto;
+        max-width: 920px;
+        padding: 56px 24px 120px;
+      }
+
+      h1 {
+        font-size: 40px;
+        line-height: 1.1;
+        margin: 0 0 12px;
+      }
+
+      p {
+        font-size: 16px;
+        line-height: 1.7;
+        margin: 0 0 16px;
+        max-width: 720px;
+      }
+
+      .panel {
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.75);
+        border: 1px solid rgba(143, 174, 216, 0.3);
+        border-radius: 20px;
+        box-shadow: 0 18px 36px rgba(90, 114, 145, 0.12);
+        margin-top: 32px;
+        padding: 20px;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      button {
+        background: #1f6feb;
+        border: 0;
+        border-radius: 999px;
+        color: #fff;
+        cursor: pointer;
+        font: inherit;
+        padding: 10px 16px;
+      }
+
+      button.secondary {
+        background: #eff4ff;
+        color: #34507a;
+      }
+
+      #status {
+        color: #52627a;
+        font-size: 14px;
+        margin-top: 18px;
+      }
+
+      code {
+        background: rgba(31, 111, 235, 0.08);
+        border-radius: 6px;
+        padding: 2px 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>live2d-web-widget Demo</h1>
+      <p>这个页面直接使用当前仓库构建出来的 npm 包产物和内置 demo 模型。</p>
+      <p>右下角会自动挂载 Live2D 组件；你也可以用下面的按钮测试实例 API。</p>
+
+      <div class="panel">
+        <p>当前模式：<code>createLive2DWidget({ modelManifest: defaultDemoManifest })</code></p>
+        <div class="actions">
+          <button id="next-model">下一个模型</button>
+          <button id="random-model" class="secondary">随机模型</button>
+          <button id="show-message" class="secondary">显示提示</button>
+          <button id="hide-widget" class="secondary">隐藏</button>
+          <button id="show-widget" class="secondary">显示</button>
+        </div>
+        <div id="status">正在初始化...</div>
+      </div>
+    </main>
+
+    <script type="module">
+      import {
+        createLive2DWidget,
+        defaultDemoManifest,
+        getDefaultDemoBaseUrl
+      } from "../dist/index.js";
+
+      const status = document.getElementById("status");
+
+      const widget = createLive2DWidget({
+        modelBaseUrl: getDefaultDemoBaseUrl(),
+        modelManifest: defaultDemoManifest,
+        onModelChange(event) {
+          status.textContent = `已加载模型 #${event.index}: ${event.url}`;
+        }
+      });
+
+      await widget.ready;
+      status.textContent = "初始化完成，右下角应该已经出现 Live2D 角色。";
+
+      document.getElementById("next-model").addEventListener("click", () => {
+        void widget.nextModel();
+      });
+
+      document.getElementById("random-model").addEventListener("click", () => {
+        void widget.randomizeModel();
+      });
+
+      document.getElementById("show-message").addEventListener("click", () => {
+        widget.showMessage("这是 demo 页手动触发的一条消息。", 4000, 10);
+      });
+
+      document.getElementById("hide-widget").addEventListener("click", () => {
+        widget.hide(false);
+      });
+
+      document.getElementById("show-widget").addEventListener("click", () => {
+        widget.show();
+      });
+    </script>
+  </body>
+</html>
